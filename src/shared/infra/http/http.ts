@@ -12,6 +12,11 @@ app.use(cors());
 
 const serverHttp = http.createServer(app);
 
-const io = new Server(serverHttp);
+const io = new Server(serverHttp, {
+  cors: {
+    origin: "http://localhost:3000"
+  }
+});
+
 
 export { serverHttp, io };
