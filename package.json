@@ -1,0 +1,29 @@
+{
+  "name": "web-chat-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/vicvictor86/web-chat-backend.git",
+  "author": "Victor Emmanuel <vicbem@hotmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "ts-node-dev -r tsconfig-paths/register src/shared/infra/http/server.ts",
+    "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:run": "yarn typeorm migration:run -d src/shared/infra/typeorm/index.ts"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "pg": "^8.8.0",
+    "reflect-metadata": "^0.1.13",
+    "socket.io": "^4.5.3",
+    "tsyringe": "^4.7.0",
+    "typeorm": "^0.3.10"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/socket.io": "^3.0.2",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.1.0",
+    "typescript": "^4.8.4"
+  }
+}
