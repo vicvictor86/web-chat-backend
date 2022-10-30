@@ -1,4 +1,7 @@
-import Message from "../repositories/entities/Message";
+import ISocketInformationDTO from "@shared/dtos/ISocketInformationDTO";
+import { inject, injectable } from "tsyringe";
+import Message from "../infra/typeorm/entities/Messages";
+import IMessagesRepository from "../repositories/IMessagesRepository";
 
 interface Request {
   username: string;
@@ -6,16 +9,27 @@ interface Request {
   text: string;
 
   room: string;
+
+  socketInformation: ISocketInformationDTO;
 }
 
+@injectable()
 export default class CreateMessageService {
-  public execute(data: Request): Message {
-    const message = new Message();
-    message.id = data.username;
-    message.text = data.text;
-    message.room = data.room;
-    message.username = data.username;
-    message.createdAt = new Date();
+  constructor(
+    @inject("MessagesRepository")
+    private messagesRepository: IMessagesRepository,
+  ){}
+
+  public async execute({username, room, text, socketInformation}: Request): Promise<Message> {
+    const { io, socket, callback } = socketInformation;
+
+    const message = await this.messagesRepository.create({
+      username,
+      room,
+      text,
+    });
+
+    io.to(room).emit("message", message);
 
     return message;
   }

@@ -1,6 +1,7 @@
-interface ICreateMessageDTO {
-  room: string, 
-  text: string,
-  createdAt: Date,
-  username: string
+export default interface ICreateMessageDTO {
+  room: string; 
+
+  text: string;
+
+  username: string;
 }
