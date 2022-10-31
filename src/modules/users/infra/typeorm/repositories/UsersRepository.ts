@@ -27,25 +27,14 @@ export const UsersRepository: IUsersRepository = usersRepository.extend({
     return user;
   },
 
-  async findUserInRoom(username: string, room: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await usersRepository.findOne({
       where: {
-        username,
-        room
+        email
       }
     });
-
     return user;
   },
-
-  // async findByEmail(email: string): Promise<User | null> {
-  //   const user = await usersRepository.findOne({
-  //     where: {
-  //       email
-  //     }
-  //   });
-  //   return user;
-  // },
 
   async create(userData: ICreateUserDTO): Promise<User> {
     const users = usersRepository.create(userData);

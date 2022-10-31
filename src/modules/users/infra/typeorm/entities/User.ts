@@ -6,13 +6,13 @@ export default class User {
   id: string;
 
   @Column()
-  socket_id: string;
-
-  @Column()
   username: string;
 
   @Column()
-  room: string;
+  email: string;
+
+  @Column()
+  password: string;
 
   @CreateDateColumn()
   created_at: Date;

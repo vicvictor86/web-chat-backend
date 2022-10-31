@@ -1,17 +1,17 @@
 import IMessagesRepository from "@modules/message/repositories/IMessagesRepository";
+import AppError from "@shared/errors/AppError";
+import { hash } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
 import ISocketInformationDTO from "../../../shared/dtos/ISocketInformationDTO";
 import User from "../infra/typeorm/entities/User";
 import IUsersRepository from "../repositories/IUsersRepository";
 
 interface Request {
-  socket_id: string;
-
   username: string;
 
-  room: string;
+  email: string;
 
-  socketInformation: ISocketInformationDTO;
+  password: string;
 }
 
 @injectable()
@@ -20,34 +20,22 @@ export default class CreateUserService {
   constructor(
     @inject("UsersRepository")
     private usersRepository: IUsersRepository,
-
-    @inject("MessagesRepository")
-    private messagesRepository: IMessagesRepository,
   ){}
 
-  public async execute({socket_id, username, room, socketInformation}: Request): Promise<User> {
-    const { io, socket, callback } = socketInformation;
+  public async execute({username, email, password}: Request): Promise<User> {
+    const userExists = await this.usersRepository.findByEmail(email);
 
-    socket.join(room);
-
-    const userInRoom = await this.usersRepository.findUserInRoom(username, room);
-
-    let user: User;
-    if (userInRoom) {
-      user = await this.usersRepository.save({
-        ...userInRoom,
-        socket_id: socket.id,
-      })
-    } else {
-      user = await this.usersRepository.create({
-        socket_id: socket.id,
-        username: username,
-        room: room,
-      });
+    if(userExists) {
+      throw new AppError('Email already exists');
     }
 
-    const userMessages = await this.messagesRepository.findByRoom(room);
-    callback(userMessages);
+    const hashedPassword = await hash(password, 8);
+
+    const user = await this.usersRepository.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
 
     return user;
   }
