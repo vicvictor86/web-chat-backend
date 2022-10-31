@@ -1,8 +1,6 @@
-import IMessagesRepository from "@modules/message/repositories/IMessagesRepository";
 import AppError from "@shared/errors/AppError";
 import { hash } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
-import ISocketInformationDTO from "../../../shared/dtos/ISocketInformationDTO";
 import User from "../infra/typeorm/entities/User";
 import IUsersRepository from "../repositories/IUsersRepository";
 
@@ -23,10 +21,15 @@ export default class CreateUserService {
   ){}
 
   public async execute({username, email, password}: Request): Promise<User> {
-    const userExists = await this.usersRepository.findByEmail(email);
+    const emailExists = await this.usersRepository.findByEmail(email);
+    const usernameExists = await this.usersRepository.findByUsername(username);
 
-    if(userExists) {
+    if(emailExists) {
       throw new AppError('Email already exists');
+    }
+
+    if(usernameExists) {
+      throw new AppError('Username already exists')
     }
 
     const hashedPassword = await hash(password, 8);

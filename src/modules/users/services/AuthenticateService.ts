@@ -20,11 +20,11 @@ export default class AuthenticateService {
     private userRepository: IUsersRepository,
   ){}
 
-  public async execute({ email, password }: ICreateLoginSessionsDTO): Promise<Response>{
-    const user = await this.userRepository.findByEmail(email);
+  public async execute({ username, password }: ICreateLoginSessionsDTO): Promise<Response>{
+    const user = await this.userRepository.findByUsername(username);
 
     if(!user){
-      throw new AppError('Email or password incorrect');
+      throw new AppError('Username or password incorrect');
     }
 
     const hashedPassword = user.password;
@@ -32,7 +32,7 @@ export default class AuthenticateService {
     const authenticated = await compare(password, hashedPassword);
 
     if(!authenticated) {
-      throw new AppError('Email or password incorrect');
+      throw new AppError('Username or password incorrect');
     }
 
     const token = sign({}, authConfig.jwt.secret, {
