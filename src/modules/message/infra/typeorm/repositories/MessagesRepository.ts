@@ -7,6 +7,26 @@ import ICreateMessageDTO from '@modules/message/dtos/ICreateMessageDTO';
 const messagesRepository = connectionSource.getRepository(Messages);
 
 export const MessagesRepository: IMessagesRepository = messagesRepository.extend({
+  async findByUserId(user_id: string): Promise<Messages[] | null> {
+    const message = await messagesRepository.find({
+      where: {
+        user_id
+      }
+    });
+
+    return message;
+  },
+
+  async findByRoomId(room_id: string): Promise<Messages[] | null> {
+    const message = await messagesRepository.find({
+      where: {
+        room_id
+      }
+    });
+
+    return message;
+  },
+
   async findById(id: string): Promise<Messages | null> {
     const message = await messagesRepository.findOne({
       where: {
@@ -17,26 +37,16 @@ export const MessagesRepository: IMessagesRepository = messagesRepository.extend
     return message;
   },
 
-  async findByUsername(username: string): Promise<Messages | null> {
-    const message = await messagesRepository.findOne({
+  async findByText(text: string): Promise<Messages[] | null> {
+    const messages = await messagesRepository.find({
       where: {
-        username
+        text,
       }
     });
 
-    return message;
+    return messages;
   },
 
-  async findByRoom(room: string): Promise<Messages[] | null> {
-    const message = await messagesRepository.find({
-      where: {
-        room
-      }
-    });
-
-    return message;
-  },
-  
   async create(messageData: ICreateMessageDTO): Promise<Messages> {
     const message = messagesRepository.create(messageData);
 
