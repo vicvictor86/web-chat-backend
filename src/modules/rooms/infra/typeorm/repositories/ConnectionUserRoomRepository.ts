@@ -56,8 +56,8 @@ export const ConnectionUserRoomRepository: IConnectionUserRoomRepository = conne
     return connectionUserRoom;
   },
 
-  async save(ConnectionUserRoom: ConnectionUserRoom): Promise<ConnectionUserRoom> {
-    return await connectionUserRoomRepository.save(ConnectionUserRoom);
+  async save(connectionUserRoom: ConnectionUserRoom): Promise<ConnectionUserRoom> {
+    return await connectionUserRoomRepository.save(connectionUserRoom);
   },
 
 })
