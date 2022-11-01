@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { serverHttp, io } from "./http";
-import "../../../modules/message/infra/websocket/routes/message.socket";
+import "../../../modules/message/infra/websocket/routes/message.routes";
 import "../../../modules/users/infra/http/routes/user.routes";
 import "@modules/rooms/infra/websocket/routes/ConnectionUserRoom.routes";
 

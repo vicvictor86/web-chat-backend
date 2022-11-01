@@ -8,9 +8,9 @@ import { MessagesRepository } from '@modules/message/infra/typeorm/repositories/
 
 import IRoomsRepository from '@modules/rooms/repositories/IRoomsRepository';
 import { RoomsRepository } from '@modules/rooms/infra/typeorm/repositories/RoomsRepository';
+
 import IConnectionUserRoomRepository from '@modules/rooms/repositories/IConnectionUserRoomRepository';
 import { ConnectionUserRoomRepository } from '@modules/rooms/infra/typeorm/repositories/ConnectionUserRoomRepository';
-
 
 container.registerInstance<IUsersRepository>('UsersRepository', UsersRepository);
 
