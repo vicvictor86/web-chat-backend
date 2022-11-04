@@ -33,7 +33,7 @@ export default class ConnectionUserRoomController {
 
   public async update({ user_id, room_id, connectionMessage }: DisconnectRequest, socketInformation: ISocketInformationDTO): Promise<void> {
     const updateConnectionUserRoomService = container.resolve(UpdateConnectionUserRoomService);
-    
+
     await updateConnectionUserRoomService.execute({ user_id, room_id, connectionMessage, socketInformation });
   }
 
