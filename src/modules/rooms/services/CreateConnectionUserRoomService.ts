@@ -1,11 +1,17 @@
+import { Server } from "socket.io";
+import { inject, injectable } from "tsyringe";
+
 import IFrontEndResponseMessage from "@modules/message/dtos/IFrontEndResponseMessage";
 import IMessagesRepository from "@modules/message/repositories/IMessagesRepository";
 import IUsersRepository from "@modules/users/repositories/IUsersRepository";
-import { inject, injectable } from "tsyringe";
 import ISocketInformationDTO from "../../../shared/dtos/ISocketInformationDTO";
-import ConnectionUsersRooms from "../infra/typeorm/entities/ConnectionUserRoom";
 import IConnectionUserRoomRepository from "../repositories/IConnectionUserRoomRepository";
 import IRoomsRepository from "../repositories/IRoomsRepository";
+
+import Messages from "@modules/message/infra/typeorm/entities/Messages";
+import User from "@modules/users/infra/typeorm/entities/User";
+import ConnectionUsersRooms from "../infra/typeorm/entities/ConnectionUserRoom";
+import Room from "../infra/typeorm/entities/Room";
 
 interface Request {
   user_id: string;
@@ -73,34 +79,55 @@ export default class CreateConnectionUserRoomService {
 
     const sessionMessages = await this.messagesRepository.findByRoomId(newRoom.id);
 
-    if (!sessionMessages) {
-      return null;
+    const sessionsConnection = await this.connectionUserRoomRepository.findByRoomId(newRoom.id);
+
+    let usersInCurrentRoom: User[] = [];
+    if (sessionsConnection) {
+      sessionsConnection.forEach(session => {
+        if (session.is_on_chat) {
+          usersInCurrentRoom.push(session.user);
+        }
+      });
     }
 
-    const sessionMessagesToFront: IFrontEndResponseMessage[] =
-      sessionMessages.map( message => {
-        const messageToFront = {
-          username: message.user.username,
-          text: message.text,
-          createdAt: message.created_at,
-        } as IFrontEndResponseMessage;
+    await this.sendPreviousMessagesToFront(sessionMessages, callback, user, newRoom, usersInCurrentRoom);
 
-        return messageToFront;
-      });
+    await this.sendConnectionMessageToFront(userInRoom, user, newRoom, connectionMessage, io, roomName);
+
+    return connection;
+  }
+
+  private async sendPreviousMessagesToFront(sessionMessages: Messages[] | null, callback: any, user: User, newRoom: Room, usersInCurrentRoom: User[]) {
+    let sessionMessagesToFront: IFrontEndResponseMessage[] = [];
+    if (sessionMessages) {
+      sessionMessagesToFront =
+        sessionMessages.map(message => {
+          const messageToFront = {
+            username: message.user.username,
+            text: message.text,
+            createdAt: message.created_at,
+          } as IFrontEndResponseMessage;
+
+          return messageToFront;
+        });
+    }
 
     callback({
       messages: sessionMessagesToFront,
+      usersInCurrentRoom,
       username: user.username,
       room_id: newRoom.id,
     });
+  }
 
+  private async sendConnectionMessageToFront(userInRoom: ConnectionUsersRooms | null, user: User, newRoom: Room, connectionMessage: string, io: Server, roomName: string) {
     if (!userInRoom?.is_on_chat) {
       const newMessageConnection = await this.messagesRepository.create({
         user_id: user.id,
         room_id: newRoom.id,
         text: connectionMessage,
       });
-      
+
       const connectionMessageToFront = {
         username: user.username,
         text: newMessageConnection.text,
@@ -109,7 +136,5 @@ export default class CreateConnectionUserRoomService {
 
       io.to(roomName).emit("message", connectionMessageToFront);
     }
-
-    return connection;
   }
 }

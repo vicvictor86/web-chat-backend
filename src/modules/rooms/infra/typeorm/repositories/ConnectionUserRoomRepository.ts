@@ -17,8 +17,8 @@ export const ConnectionUserRoomRepository: IConnectionUserRoomRepository = conne
     return connectionUserRoom;
   },
 
-  async findByUserId(user_id: string): Promise<ConnectionUserRoom | null> {
-    const connectionUserRoom = await connectionUserRoomRepository.findOne({
+  async findByUserId(user_id: string): Promise<ConnectionUserRoom[] | null> {
+    const connectionUserRoom = await connectionUserRoomRepository.find({
       where: {
         user_id
       }
@@ -27,8 +27,8 @@ export const ConnectionUserRoomRepository: IConnectionUserRoomRepository = conne
     return connectionUserRoom;
   },
 
-  async findByRoomId(room_id: string): Promise<ConnectionUserRoom | null> {
-    const connectionUserRoom = await connectionUserRoomRepository.findOne({
+  async findByRoomId(room_id: string): Promise<ConnectionUserRoom[]| null> {
+    const connectionUserRoom = await connectionUserRoomRepository.find({
       where: {
         room_id
       }
