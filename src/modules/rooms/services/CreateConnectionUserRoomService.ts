@@ -75,6 +75,8 @@ export default class CreateConnectionUserRoomService {
       is_on_chat: alreadyInRoom,
     })
 
+    io.to(newRoom.name).emit("new_user_connected");
+
     return connection;
   }
 }
