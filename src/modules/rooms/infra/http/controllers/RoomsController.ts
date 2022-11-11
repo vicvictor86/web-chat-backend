@@ -6,7 +6,7 @@ import ShowRoomService from "@modules/rooms/services/ShowRoomService";
 export default class RoomsController {
   public async create(request: Request, response: Response) {
     const { name, user_limit } = request.body;
-
+    
     const createRoomService = container.resolve(CreateRoomService);
 
     const room = await createRoomService.execute({ name, user_limit });
