@@ -47,12 +47,15 @@ export default class CreateConnectionUserRoomService {
 
     socket.join(roomName);
 
-    const userInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, newRoom.id);
+    const connectionUserInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, newRoom.id);
+    let alreadyInRoom = false;
 
     let connection: ConnectionUsersRooms;
-    if (userInRoom) {
+    if (connectionUserInRoom) {
+      alreadyInRoom = connectionUserInRoom.is_on_chat;
+      
       connection = await this.connectionUserRoomRepository.save({
-        ...userInRoom,
+        ...connectionUserInRoom,
         socket_id: socket.id,
         room: newRoom,
         is_on_chat: true,
@@ -69,6 +72,7 @@ export default class CreateConnectionUserRoomService {
     callback({
       room_id: newRoom.id,
       username: user.username,
+      is_on_chat: alreadyInRoom,
     })
 
     return connection;
