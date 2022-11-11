@@ -7,6 +7,10 @@ import ICreateUserDTO from '@modules/rooms/dtos/ICreateRoomDTO';
 const roomsRepository = connectionSource.getRepository(Room);
 
 export const RoomsRepository: IRoomRepository = roomsRepository.extend({
+  async all(): Promise<Room[] | null> {
+    return await roomsRepository.find();
+  },
+
   async findById(id: string): Promise<Room | null> {
     const room = await roomsRepository.findOne({
       where: {

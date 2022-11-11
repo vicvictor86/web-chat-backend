@@ -10,25 +10,20 @@ interface Request {
 }
 
 @injectable()
-export default class CreateRoomService {
+export default class ShowRoomService {
 
   constructor(
     @inject("RoomsRepository")
     private roomsRepository: IRoomsRepository,
   ) { }
 
-  public async execute({ name, user_limit }: Request): Promise<Room> {
-    const roomExists = await this.roomsRepository.findByName(name);
+  public async execute(): Promise<Room[]> {
+    const rooms = await this.roomsRepository.all();
 
-    if (roomExists) {
-      throw new AppError('Room with this name already exists');
+    if(!rooms){
+      return [];
     }
 
-    const room = await this.roomsRepository.create({
-      name,
-      user_limit,
-    });
-
-    return room;
+    return rooms;
   }
 }

@@ -1,18 +1,16 @@
-import IFrontEndResponseMessage from "@modules/message/dtos/IFrontEndResponseMessage";
-import IMessagesRepository from "@modules/message/repositories/IMessagesRepository";
-import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 import { inject, injectable } from "tsyringe";
+
+import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 import ISocketInformationDTO from "../../../shared/dtos/ISocketInformationDTO";
-import ConnectionUsersRooms from "../infra/typeorm/entities/ConnectionUserRoom";
 import IConnectionUserRoomRepository from "../repositories/IConnectionUserRoomRepository";
 import IRoomsRepository from "../repositories/IRoomsRepository";
+
+import ConnectionUsersRooms from "../infra/typeorm/entities/ConnectionUserRoom";
 
 interface Request {
   user_id: string;
 
   roomName: string;
-
-  connectionMessage: string;
 
   socketInformation: ISocketInformationDTO;
 }
@@ -26,14 +24,11 @@ export default class CreateConnectionUserRoomService {
     @inject("RoomsRepository")
     private roomsRepository: IRoomsRepository,
 
-    @inject("MessagesRepository")
-    private messagesRepository: IMessagesRepository,
-
     @inject("ConnectionUserRoomRepository")
     private connectionUserRoomRepository: IConnectionUserRoomRepository
   ) { }
 
-  public async execute({ user_id, roomName, connectionMessage, socketInformation }: Request): Promise<ConnectionUsersRooms | null> {
+  public async execute({ user_id, roomName, socketInformation }: Request): Promise<ConnectionUsersRooms | null> {
     const { io, socket, callback } = socketInformation;
 
     const user = await this.usersRepository.findById(user_id);
@@ -46,18 +41,21 @@ export default class CreateConnectionUserRoomService {
     const newRoom = await this.roomsRepository.findByName(roomName);
 
     if (!newRoom) {
-      socket.emit("app_error", { message: "Room not found" });
+      socket.emit("app_error", { message: "Room not found", code: 404 });
       return null;
     }
 
     socket.join(roomName);
 
-    const userInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, newRoom.id);
+    const connectionUserInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, newRoom.id);
+    let alreadyInRoom = false;
 
     let connection: ConnectionUsersRooms;
-    if (userInRoom) {
+    if (connectionUserInRoom) {
+      alreadyInRoom = connectionUserInRoom.is_on_chat;
+      
       connection = await this.connectionUserRoomRepository.save({
-        ...userInRoom,
+        ...connectionUserInRoom,
         socket_id: socket.id,
         room: newRoom,
         is_on_chat: true,
@@ -71,44 +69,13 @@ export default class CreateConnectionUserRoomService {
       });
     }
 
-    const sessionMessages = await this.messagesRepository.findByRoomId(newRoom.id);
-
-    if (!sessionMessages) {
-      return null;
-    }
-
-    const sessionMessagesToFront: IFrontEndResponseMessage[] =
-      sessionMessages.map( message => {
-        const messageToFront = {
-          username: message.user.username,
-          text: message.text,
-          createdAt: message.created_at,
-        } as IFrontEndResponseMessage;
-
-        return messageToFront;
-      });
-
     callback({
-      messages: sessionMessagesToFront,
-      username: user.username,
       room_id: newRoom.id,
-    });
+      username: user.username,
+      is_on_chat: alreadyInRoom,
+    })
 
-    if (!userInRoom?.is_on_chat) {
-      const newMessageConnection = await this.messagesRepository.create({
-        user_id: user.id,
-        room_id: newRoom.id,
-        text: connectionMessage,
-      });
-      
-      const connectionMessageToFront = {
-        username: user.username,
-        text: newMessageConnection.text,
-        createdAt: newMessageConnection.created_at,
-      } as IFrontEndResponseMessage;
-
-      io.to(roomName).emit("message", connectionMessageToFront);
-    }
+    io.to(newRoom.name).emit("new_user_connected");
 
     return connection;
   }

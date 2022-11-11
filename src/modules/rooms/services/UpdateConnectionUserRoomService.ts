@@ -55,6 +55,7 @@ export default class CreateConnectionUserRoomService {
     } as IFrontEndResponseMessage;
 
     io.to(newConnection.room.name).emit("message", frontEndMessage);
+    io.to(newConnection.room.name).emit("user_disconnected");
 
     return connection;
   }
