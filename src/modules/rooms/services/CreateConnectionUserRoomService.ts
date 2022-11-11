@@ -41,7 +41,7 @@ export default class CreateConnectionUserRoomService {
     const newRoom = await this.roomsRepository.findByName(roomName);
 
     if (!newRoom) {
-      socket.emit("app_error", { message: "Room not found" });
+      socket.emit("app_error", { message: "Room not found", code: 404 });
       return null;
     }
 
