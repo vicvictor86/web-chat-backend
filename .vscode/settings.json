@@ -3,5 +3,6 @@
     "dtos",
     "tsyringe",
     "typeorm"
-  ]
+  ],
+  "editor.tabSize": 2
 }

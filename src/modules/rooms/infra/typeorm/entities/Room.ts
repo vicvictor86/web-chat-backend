@@ -11,6 +11,12 @@ export default class Room {
   @Column()
   user_limit: number;
 
+  @Column()
+  is_private: boolean;
+
+  @Column()
+  password: string;
+
   @CreateDateColumn()
   created_at: Date;
 

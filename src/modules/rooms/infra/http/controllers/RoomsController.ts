@@ -6,11 +6,11 @@ import IndexRoomService from "@modules/rooms/services/IndexRoomService";
 
 export default class RoomsController {
   public async create(request: Request, response: Response) {
-    const { name, user_limit } = request.body;
+    const { name, user_limit, password } = request.body;
     
     const createRoomService = container.resolve(CreateRoomService);
 
-    const room = await createRoomService.execute({ name, user_limit });
+    const room = await createRoomService.execute({ name, user_limit, password });
 
     return response.status(200).json(room);
   }
