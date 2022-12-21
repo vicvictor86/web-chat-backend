@@ -7,7 +7,7 @@ import IndexConnectionUserRoomService from "@modules/rooms/services/IndexConnect
 interface Request {
   user_id: string;
 
-  roomName: string;
+  room_id: string;
 }
 
 interface DisconnectRequest {
@@ -25,10 +25,10 @@ interface ConnectionsRequest {
 }
 
 export default class ConnectionUserRoomController {
-  public async create({ user_id, roomName }: Request, socketInformation: ISocketInformationDTO): Promise<void> {
+  public async create({ user_id, room_id }: Request, socketInformation: ISocketInformationDTO): Promise<void> {
     const createConnectionUserRoomService = container.resolve(CreateConnectionUserRoomService);
 
-    await createConnectionUserRoomService.execute({ user_id, roomName, socketInformation });
+    await createConnectionUserRoomService.execute({ user_id, room_id, socketInformation });
   }
 
   public async update({ user_id, room_id, connectionMessage }: DisconnectRequest, socketInformation: ISocketInformationDTO): Promise<void> {

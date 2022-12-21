@@ -54,8 +54,8 @@ export default class CreateConnectionUserRoomService {
       createdAt: messageWithEagle?.created_at,
     } as IFrontEndResponseMessage;
 
-    io.to(newConnection.room.name).emit("message", frontEndMessage);
-    io.to(newConnection.room.name).emit("user_disconnected");
+    io.to(newConnection.room.id).emit("message", frontEndMessage);
+    io.to(newConnection.room.id).emit("user_disconnected");
 
     return connection;
   }

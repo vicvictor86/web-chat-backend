@@ -51,7 +51,7 @@ export default class CreateMessageService {
       createdAt: messageWithEagle?.created_at,
     } as IFrontEndResponseMessage;
 
-    io.to(roomName).emit("message", messageToFront);
+    io.to(room_id).emit("message", messageToFront);
 
     return message;
   }
