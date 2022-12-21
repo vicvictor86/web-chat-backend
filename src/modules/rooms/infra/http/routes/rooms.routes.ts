@@ -7,5 +7,6 @@ const roomsController = new RoomsController();
 
 roomsRouter.post('/', ensureAuthenticate, roomsController.create);
 roomsRouter.get('/',  roomsController.show);
+roomsRouter.get('/:id',  roomsController.index);
 
 export default roomsRouter;
