@@ -16,7 +16,7 @@ interface Request {
 }
 
 @injectable()
-export default class CreateConnectionUserRoomService {
+export default class UpdateConnectionUserRoomService {
 
   constructor(
     @inject("MessagesRepository")

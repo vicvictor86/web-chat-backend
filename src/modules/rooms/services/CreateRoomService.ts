@@ -1,7 +1,9 @@
 import AppError from "@shared/errors/AppError";
 import { hash } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
+
 import Room from "../infra/typeorm/entities/Room";
+import IAdmRoomsRepository from "../repositories/IAdmRoomsRepository";
 import IRoomsRepository from "../repositories/IRoomsRepository";
 
 interface Request {
@@ -10,6 +12,8 @@ interface Request {
   user_limit: number;
 
   password: string | undefined;
+
+  user_id: string;
 }
 
 @injectable()
@@ -18,9 +22,13 @@ export default class CreateRoomService {
   constructor(
     @inject("RoomsRepository")
     private roomsRepository: IRoomsRepository,
+
+    @inject("AdmRoomsRepository")
+    private admRoomsRepository: IAdmRoomsRepository
+
   ) { }
 
-  public async execute({ name, user_limit, password }: Request): Promise<Room> {
+  public async execute({ name, user_limit, password, user_id }: Request): Promise<Room> {
     const roomExists = await this.roomsRepository.findByName(name);
 
     if (roomExists) {
@@ -39,6 +47,12 @@ export default class CreateRoomService {
       is_private: password !== undefined,
       password,
     });
+
+    await this.admRoomsRepository.create({
+      room_id: room.id,
+      room_creator: true,
+      user_id,
+    })
 
     return room;
   }
