@@ -3,6 +3,8 @@ import { Request, Response } from "express";
 import CreateRoomService from "@modules/rooms/services/CreateRoomService";
 import ShowRoomService from "@modules/rooms/services/ShowRoomService";
 import IndexRoomService from "@modules/rooms/services/IndexRoomService";
+import AuthenticatePrivateRoomAccessService from "@modules/rooms/services/AuthenticatePrivateRoomAccessService";
+import { instanceToInstance } from "class-transformer";
 
 export default class RoomsController {
   public async create(request: Request, response: Response) {
@@ -12,7 +14,7 @@ export default class RoomsController {
 
     const room = await createRoomService.execute({ name, user_limit, password });
 
-    return response.status(200).json(room);
+    return response.status(200).json(instanceToInstance(room));
   }
 
   public async show(request: Request, response: Response) {
@@ -20,7 +22,7 @@ export default class RoomsController {
 
     const rooms = await showRoomService.execute();
 
-    return response.status(200).json(rooms);
+    return response.status(200).json(instanceToInstance(rooms));
   }
 
   public async index(request: Request, response: Response) {
@@ -30,6 +32,6 @@ export default class RoomsController {
 
     const rooms = await indexRoomService.execute(id);
 
-    return response.status(200).json(rooms);
+    return response.status(200).json(instanceToInstance(rooms));
   }
 }

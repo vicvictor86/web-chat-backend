@@ -8,6 +8,10 @@ interface Request {
   user_id: string;
 
   room_id: string;
+
+  password: string;
+
+  is_private: boolean;
 }
 
 interface DisconnectRequest {

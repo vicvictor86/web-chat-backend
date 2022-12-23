@@ -1,31 +1,23 @@
 import AppError from "@shared/errors/AppError";
 import { inject, injectable } from "tsyringe";
 import Room from "../infra/typeorm/entities/Room";
-import IConnectionUserRoomRepository from "../repositories/IConnectionUserRoomRepository";
+import IRoomsRepository from "../repositories/IRoomsRepository";
 
 @injectable()
 export default class IndexRoomService {
 
   constructor(
-    @inject("ConnectionUserRoomRepository")
-    private connectionUserRoomRepository: IConnectionUserRoomRepository,
+    @inject("RoomsRepository")
+    private roomsRepository: IRoomsRepository,
   ) { }
 
-  public async execute(id: string): Promise<Room[]> {
-    const roomsConnected = await this.connectionUserRoomRepository.findByUserId(id);
+  public async execute(id: string): Promise<Room | null> {
+    const room = await this.roomsRepository.findById(id);
 
-    if(!roomsConnected) {
-      return [];
+    if(!room){
+      throw new AppError(`Room not found`);
     }
 
-    const rooms = roomsConnected.map(roomConnected => {
-      return roomConnected.room;
-    });
-
-    if(!rooms){
-      return [];
-    }
-
-    return rooms;
+    return room;
   }
 }

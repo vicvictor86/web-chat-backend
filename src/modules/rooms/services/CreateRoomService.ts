@@ -1,4 +1,5 @@
 import AppError from "@shared/errors/AppError";
+import { hash } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
 import Room from "../infra/typeorm/entities/Room";
 import IRoomsRepository from "../repositories/IRoomsRepository";
@@ -28,6 +29,8 @@ export default class CreateRoomService {
 
     if(password === "") {
       password = undefined;
+    } else if(password){
+      password = await hash(password, 8);
     }
 
     const room = await this.roomsRepository.create({
