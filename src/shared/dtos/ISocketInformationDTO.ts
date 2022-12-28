@@ -5,5 +5,5 @@ export default interface ISocketInformationDTO {
   
   socket: Socket; 
 
-  callback: any;
+  callback?: any;
 }

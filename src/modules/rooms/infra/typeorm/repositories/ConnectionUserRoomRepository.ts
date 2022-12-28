@@ -37,6 +37,16 @@ export const ConnectionUserRoomRepository: IConnectionUserRoomRepository = conne
     return connectionUserRoom;
   },
 
+  async findBySocketId(socket_id: string): Promise<ConnectionUserRoom | null> {
+    const connectionUserRoom = await connectionUserRoomRepository.findOne({
+      where: {
+        socket_id
+      }
+    });
+    
+    return connectionUserRoom;
+  },
+
   async findByUserIdAndRoomId(user_id: string, room_id: string): Promise<ConnectionUserRoom | null> {
     const connectionUserRoom = await connectionUserRoomRepository.findOne({
       where: {

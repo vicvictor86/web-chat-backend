@@ -15,14 +15,6 @@ interface Request {
   is_private: boolean;
 }
 
-interface DisconnectRequest {
-  user_id: string;
-
-  room_id: string;
-
-  connectionMessage: string;
-}
-
 interface ConnectionsRequest {
   user_id: string;
 
@@ -50,10 +42,10 @@ export default class ConnectionUserRoomController {
     await deleteConnectionUserRoomService.execute({ user_id, room_id, userToKickId, socketInformation });
   }
 
-  public async update({ user_id, room_id, connectionMessage }: DisconnectRequest, socketInformation: ISocketInformationDTO): Promise<void> {
+  public async update(socketInformation: ISocketInformationDTO): Promise<void> {
     const updateConnectionUserRoomService = container.resolve(UpdateConnectionUserRoomService);
 
-    await updateConnectionUserRoomService.execute({ user_id, room_id, connectionMessage, socketInformation });
+    await updateConnectionUserRoomService.execute({ socketInformation });
   }
 
   public async index({ user_id, room_id }: ConnectionsRequest, socketInformation: ISocketInformationDTO) {
