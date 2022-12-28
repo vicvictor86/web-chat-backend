@@ -1,5 +1,5 @@
-import AppError from "@shared/errors/AppError";
 import { inject, injectable } from "tsyringe";
+
 import Room from "../infra/typeorm/entities/Room";
 import IConnectionUserRoomRepository from "../repositories/IConnectionUserRoomRepository";
 

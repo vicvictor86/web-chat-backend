@@ -1,9 +1,9 @@
 import { Router } from "express";
 import RoomsUserController from "../controllers/RoomsUserController";
 
-const roomsUserRouter = Router();
+const roomsByUserRouter = Router();
 const roomsUserController = new RoomsUserController();
 
-roomsUserRouter.get('/:id', roomsUserController.index);
+roomsByUserRouter.get('/:id', roomsUserController.index);
 
-export default roomsUserRouter;
+export default roomsByUserRouter;

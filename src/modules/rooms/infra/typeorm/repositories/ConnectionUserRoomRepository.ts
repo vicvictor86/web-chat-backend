@@ -27,7 +27,7 @@ export const ConnectionUserRoomRepository: IConnectionUserRoomRepository = conne
     return connectionUserRoom;
   },
 
-  async findByRoomId(room_id: string): Promise<ConnectionUserRoom[]| null> {
+  async findByRoomId(room_id: string): Promise<ConnectionUserRoom[] | null> {
     const connectionUserRoom = await connectionUserRoomRepository.find({
       where: {
         room_id
@@ -58,6 +58,10 @@ export const ConnectionUserRoomRepository: IConnectionUserRoomRepository = conne
 
   async save(connectionUserRoom: ConnectionUserRoom): Promise<ConnectionUserRoom> {
     return await connectionUserRoomRepository.save(connectionUserRoom);
+  },
+
+  async delete(id: string): Promise<void> {
+    await connectionUserRoomRepository.delete(id);
   },
 
 })

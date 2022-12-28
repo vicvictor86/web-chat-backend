@@ -7,5 +7,6 @@ export default interface IConnectionUserRoomRepository {
   findByRoomId(room_id: string): Promise<ConnectionUserRoom[] | null>;
   findByUserIdAndRoomId(user_id: string, room_id: string): Promise<ConnectionUserRoom | null>;
   create(data: ICreateConnectionUserRoomDTO): Promise<ConnectionUserRoom>;
+  delete(id: string): Promise<void>;
   save(connectionUserRoom: ConnectionUserRoom): Promise<ConnectionUserRoom>;
 }
