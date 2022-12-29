@@ -2,7 +2,8 @@ import Room from '../entities/Room';
 import { connectionSource } from '@shared/infra/typeorm/index';
 
 import IRoomRepository from '@modules/rooms/repositories/IRoomsRepository';
-import ICreateUserDTO from '@modules/rooms/dtos/ICreateRoomDTO';
+import ICreateRoomDTO from '@modules/rooms/dtos/ICreateRoomDTO';
+import IUpdateRoomDTO from "@modules/rooms/dtos/IUpdateRoomDTO";
 
 const roomsRepository = connectionSource.getRepository(Room);
 
@@ -40,7 +41,7 @@ export const RoomsRepository: IRoomRepository = roomsRepository.extend({
     return room;
   },
 
-  async create(roomData: ICreateUserDTO): Promise<Room> {
+  async create(roomData: ICreateRoomDTO): Promise<Room> {
     const room = roomsRepository.create(roomData);
 
     await roomsRepository.save(room);
@@ -48,8 +49,32 @@ export const RoomsRepository: IRoomRepository = roomsRepository.extend({
     return room;
   },
 
+  async update(roomData: IUpdateRoomDTO): Promise<Room> {
+    const roomToUpdate = await roomsRepository.findOne({
+      where: {
+        id: roomData.room_id,
+      }
+    });
+
+    const updatedRoom = {
+      ...roomToUpdate,
+      ...(roomData.name && { name: roomData.name }),
+      ...(roomData.password && { password: roomData.password }),
+      ...(roomData.user_limit && { user_limit: roomData.user_limit }),
+      ...(roomData.is_private && { is_private: roomData.is_private }),
+    } as Room;
+
+    await roomsRepository.save(updatedRoom)
+
+    return updatedRoom;
+  },
+
   async save(room: Room): Promise<Room> {
     return await roomsRepository.save(room);
+  },
+
+  async delete(id: string): Promise<void> {
+    await roomsRepository.delete(id);
   },
 
 })

@@ -12,6 +12,9 @@ import { RoomsRepository } from '@modules/rooms/infra/typeorm/repositories/Rooms
 import IConnectionUserRoomRepository from '@modules/rooms/repositories/IConnectionUserRoomRepository';
 import { ConnectionUserRoomRepository } from '@modules/rooms/infra/typeorm/repositories/ConnectionUserRoomRepository';
 
+import IAdmRoomsRepository from '@modules/rooms/repositories/IAdmRoomsRepository';
+import { AdmRoomsRepository } from '@modules/rooms/infra/typeorm/repositories/AdmRoomsRepository';
+
 container.registerInstance<IUsersRepository>('UsersRepository', UsersRepository);
 
 container.registerInstance<IMessagesRepository>('MessagesRepository', MessagesRepository);
@@ -19,3 +22,5 @@ container.registerInstance<IMessagesRepository>('MessagesRepository', MessagesRe
 container.registerInstance<IRoomsRepository>('RoomsRepository', RoomsRepository);
 
 container.registerInstance<IConnectionUserRoomRepository>('ConnectionUserRoomRepository', ConnectionUserRoomRepository);
+
+container.registerInstance<IAdmRoomsRepository>('AdmRoomsRepository', AdmRoomsRepository);

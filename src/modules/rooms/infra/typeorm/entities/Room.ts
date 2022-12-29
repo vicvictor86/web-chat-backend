@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('rooms')
@@ -10,6 +11,13 @@ export default class Room {
 
   @Column()
   user_limit: number;
+
+  @Column()
+  is_private: boolean;
+
+  @Column()
+  @Exclude()
+  password: string;
 
   @CreateDateColumn()
   created_at: Date;

@@ -1,7 +1,9 @@
 {
   "cSpell.words": [
     "dtos",
+    "middlewares",
     "tsyringe",
     "typeorm"
-  ]
+  ],
+  "editor.tabSize": 2
 }

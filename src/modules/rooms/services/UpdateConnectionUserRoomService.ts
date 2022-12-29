@@ -6,17 +6,11 @@ import ConnectionUsersRooms from "../infra/typeorm/entities/ConnectionUserRoom";
 import IConnectionUserRoomRepository from "../repositories/IConnectionUserRoomRepository";
 
 interface Request {
-  user_id: string;
-
-  room_id: string;
-
-  connectionMessage: string;
-
   socketInformation: ISocketInformationDTO;
 }
 
 @injectable()
-export default class CreateConnectionUserRoomService {
+export default class UpdateConnectionUserRoomService {
 
   constructor(
     @inject("MessagesRepository")
@@ -26,10 +20,10 @@ export default class CreateConnectionUserRoomService {
     private connectionUserRoomRepository: IConnectionUserRoomRepository,
   ) { }
 
-  public async execute({ user_id, connectionMessage, room_id, socketInformation }: Request): Promise<ConnectionUsersRooms | null> {
+  public async execute({ socketInformation }: Request): Promise<ConnectionUsersRooms | null> {
     const { io, socket, callback } = socketInformation;
 
-    const connection = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, room_id);
+    const connection = await this.connectionUserRoomRepository.findBySocketId(socket.id);
 
     if (!connection) {
       socket.emit("app_error", { message: "Could not find connection" });
@@ -43,7 +37,7 @@ export default class CreateConnectionUserRoomService {
     const message = await this.messagesRepository.create({
       room_id: newConnection.room_id,
       user_id: newConnection.user_id,
-      text: connectionMessage,
+      text: " saiu da sala",
     });
 
     const messageWithEagle = await this.messagesRepository.findById(message.id);
@@ -54,8 +48,8 @@ export default class CreateConnectionUserRoomService {
       createdAt: messageWithEagle?.created_at,
     } as IFrontEndResponseMessage;
 
-    io.to(newConnection.room.name).emit("message", frontEndMessage);
-    io.to(newConnection.room.name).emit("user_disconnected");
+    io.to(newConnection.room.id).emit("message", frontEndMessage);
+    io.to(newConnection.room.id).emit("user_disconnected");
 
     return connection;
   }

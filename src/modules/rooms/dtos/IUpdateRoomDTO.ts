@@ -1,4 +1,6 @@
-export default interface ICreateRoomDTO {
+export default interface IUpdateRoomDTO {
+  room_id: string;
+
   name: string;
 
   user_limit: number;

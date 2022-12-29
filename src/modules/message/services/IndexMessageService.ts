@@ -26,12 +26,6 @@ export default class IndexMessageService {
 
     @inject("RoomsRepository")
     private roomsRepository: IRoomsRepository,
-
-    @inject("UsersRepository")
-    private usersRepository: IUsersRepository,
-
-    @inject("ConnectionUserRoomRepository")
-    private connectionUserRoomRepository: IConnectionUserRoomRepository,
   ) { }
 
   public async execute({ user_id, roomName, socketInformation }: Request): Promise<Message[] | null> {
@@ -47,29 +41,17 @@ export default class IndexMessageService {
     const messages = await this.messagesRepository.findByRoomId(room.id);
 
     let messagesToFront: IFrontEndResponseMessage[] = [];
-    if(messages){
+    if (messages) {
       messagesToFront =
-      messages.map(message => {
-        const messageToFront = {
-          username: message.user.username,
-          text: message.text,
-          createdAt: message.created_at,
-        } as IFrontEndResponseMessage;
+        messages.map(message => {
+          const messageToFront = {
+            username: message.user.username,
+            text: message.text,
+            createdAt: message.created_at,
+          } as IFrontEndResponseMessage;
 
-        return messageToFront;
-      });
-    }
-
-    const userInRoom = await this.usersRepository.findById(user_id);
-    const roomConnections = await this.connectionUserRoomRepository.findByRoomId(room.id);
-
-    let onlineUsersInCurrentRoom: User[] = [];
-    if(roomConnections) {
-      roomConnections.forEach(connection => {
-        if(connection.is_on_chat){
-          onlineUsersInCurrentRoom.push(connection.user);
-        }
-      })
+          return messageToFront;
+        });
     }
 
     callback({

@@ -10,7 +10,7 @@ import ConnectionUsersRooms from "../infra/typeorm/entities/ConnectionUserRoom";
 interface Request {
   user_id: string;
 
-  roomName: string;
+  room_id: string;
 
   socketInformation: ISocketInformationDTO;
 }
@@ -28,7 +28,7 @@ export default class CreateConnectionUserRoomService {
     private connectionUserRoomRepository: IConnectionUserRoomRepository
   ) { }
 
-  public async execute({ user_id, roomName, socketInformation }: Request): Promise<ConnectionUsersRooms | null> {
+  public async execute({ user_id, room_id, socketInformation }: Request): Promise<ConnectionUsersRooms | null> {
     const { io, socket, callback } = socketInformation;
 
     const user = await this.usersRepository.findById(user_id);
@@ -38,14 +38,14 @@ export default class CreateConnectionUserRoomService {
       return null;
     }
 
-    const newRoom = await this.roomsRepository.findByName(roomName);
+    const newRoom = await this.roomsRepository.findById(room_id);
 
     if (!newRoom) {
       socket.emit("app_error", { message: "Room not found", code: 404 });
       return null;
     }
 
-    socket.join(roomName);
+    socket.join(newRoom.id);
 
     const connectionUserInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, newRoom.id);
     let alreadyInRoom = false;
@@ -70,12 +70,12 @@ export default class CreateConnectionUserRoomService {
     }
 
     callback({
-      room_id: newRoom.id,
+      room: newRoom,
       username: user.username,
       is_on_chat: alreadyInRoom,
     })
 
-    io.to(newRoom.name).emit("new_user_connected");
+    io.to(newRoom.id).emit("new_user_connected");
 
     return connection;
   }
