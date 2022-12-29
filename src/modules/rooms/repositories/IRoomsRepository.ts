@@ -10,4 +10,5 @@ export default interface IRoomsRepository {
   create(data: ICreateRoomDTO): Promise<Room>;
   update(data: IUpdateRoomDTO): Promise<Room>;
   save(room: Room): Promise<Room>;
+  delete(id: string): Promise<void>;
 }

@@ -73,4 +73,8 @@ export const RoomsRepository: IRoomRepository = roomsRepository.extend({
     return await roomsRepository.save(room);
   },
 
+  async delete(id: string): Promise<void> {
+    await roomsRepository.delete(id);
+  },
+
 })
