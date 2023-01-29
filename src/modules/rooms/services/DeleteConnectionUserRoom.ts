@@ -3,9 +3,10 @@ import { inject, injectable } from "tsyringe";
 import ISocketInformationDTO from "@shared/dtos/ISocketInformationDTO";
 import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 
-import IAdmRoomsRepository from "../repositories/IAdmRoomsRepository";
 import IRoomsRepository from "../repositories/IRoomsRepository";
 import IConnectionUserRoomRepository from "../repositories/IConnectionUserRoomRepository";
+import IRolesRoomsRepository from "../repositories/IRolesRoomsRepository";
+import { RolesEnum } from "../infra/typeorm/enums/RolesEnum";
 
 interface Request {
   user_id: string;
@@ -24,14 +25,14 @@ export default class DeleteConnectionUserRoom {
     @inject("RoomsRepository")
     private roomsRepository: IRoomsRepository,
 
-    @inject("AdmRoomsRepository")
-    private admRoomsRepository: IAdmRoomsRepository,
-
     @inject("UsersRepository")
     private usersRepository: IUsersRepository,
 
     @inject("ConnectionUserRoomRepository")
     private connectionUserRoomRepository: IConnectionUserRoomRepository,
+
+    @inject("RolesRoomsRepository")
+    private rolesRoomsRepository: IRolesRoomsRepository,
 
   ) { }
 
@@ -60,9 +61,9 @@ export default class DeleteConnectionUserRoom {
       return null;
     }
 
-    const userIsAdm = await this.admRoomsRepository.findByUserIdAndRoomId(user_id, room_id);
+    const userRole = await this.rolesRoomsRepository.findByUserIdAndRoomId(user_id, room_id);
 
-    if (!userIsAdm) {
+    if (!userRole || userRole.role === "user") {
       socket.emit("app_error", { message: "User is not admin" });
       return null;
     }
@@ -72,17 +73,17 @@ export default class DeleteConnectionUserRoom {
       return null;
     }
 
-    const userToKickIsRoomCreator = await this.admRoomsRepository.findByUserIdAndRoomId(userToKick.id, room_id);
+    const userToKickIsRoomCreator = await this.rolesRoomsRepository.findByUserIdAndRoomId(userToKick.id, room_id);
 
-    if (userToKickIsRoomCreator?.room_creator) {
-      socket.emit("app_error", { message: "You can kick the room creator " });
+    if (userToKickIsRoomCreator?.role === "owner") {
+      socket.emit("app_error", { message: "You can't kick the room creator " });
       return null;
     }
 
     await this.connectionUserRoomRepository.delete(userToKickConnection.id);
-    
+
     io.to(userToKickConnection.socket_id).emit("kicked");
-    
+
     callback(userToKick.username);
   }
 }

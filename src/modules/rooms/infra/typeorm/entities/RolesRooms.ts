@@ -1,10 +1,12 @@
-import User from '@modules/users/infra/typeorm/entities/User';
 import { Exclude } from 'class-transformer';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from 'typeorm';
+import { RolesEnum } from '../enums/RolesEnum';
+
+import User from '@modules/users/infra/typeorm/entities/User';
 import Room from './Room';
 
-@Entity('adm_rooms')
-export default class AdmRooms {
+@Entity('roles_rooms')
+export default class RolesRooms {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -15,7 +17,7 @@ export default class AdmRooms {
   @OneToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
-  
+
   @Column()
   room_id: string;
 
@@ -24,8 +26,8 @@ export default class AdmRooms {
   @JoinColumn({ name: 'room_id' })
   room: Room;
 
-  @Column()
-  room_creator: boolean;
+  @Column({ type: 'enum', enum: ["owner", "admin", "user"], default: "user"})
+  role: RolesEnum;
 
   @CreateDateColumn()
   created_at: Date;

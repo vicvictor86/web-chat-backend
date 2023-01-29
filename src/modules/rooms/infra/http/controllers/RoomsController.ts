@@ -36,16 +36,4 @@ export default class RoomsController {
 
     return response.status(200).json(instanceToInstance(rooms));
   }
-
-  public async update(request: Request, response: Response) {
-    const room_id = request.params.id;
-    const user_id = request.user.id;
-    const { newRoomName, newRoomPassword, newRoomUserLimit, is_private } = request.body;
-
-    const updateRoomService = container.resolve(UpdateRoomService);
-
-    const room = await updateRoomService.execute({ room_id,user_id, newRoomName, newRoomPassword, newRoomUserLimit, is_private });
-
-    return response.status(200).json(instanceToInstance(room));
-  }
 }

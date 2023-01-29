@@ -3,7 +3,7 @@ import { hash } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
 
 import Room from "../infra/typeorm/entities/Room";
-import IAdmRoomsRepository from "../repositories/IAdmRoomsRepository";
+import IRolesRoomsRepository from "../repositories/IRolesRoomsRepository";
 import IRoomsRepository from "../repositories/IRoomsRepository";
 
 interface Request {
@@ -23,8 +23,8 @@ export default class CreateRoomService {
     @inject("RoomsRepository")
     private roomsRepository: IRoomsRepository,
 
-    @inject("AdmRoomsRepository")
-    private admRoomsRepository: IAdmRoomsRepository
+    @inject("RolesRoomsRepository")
+    private rolesRoomsRepository: IRolesRoomsRepository,
 
   ) { }
 
@@ -35,9 +35,9 @@ export default class CreateRoomService {
       throw new AppError('Room with this name already exists');
     }
 
-    if(password === "") {
+    if (password === "") {
       password = undefined;
-    } else if(password){
+    } else if (password) {
       password = await hash(password, 8);
     }
 
@@ -48,11 +48,11 @@ export default class CreateRoomService {
       password,
     });
 
-    await this.admRoomsRepository.create({
+    await this.rolesRoomsRepository.create({
       room_id: room.id,
-      room_creator: true,
       user_id,
-    })
+      role: 'owner',
+    });
 
     return room;
   }

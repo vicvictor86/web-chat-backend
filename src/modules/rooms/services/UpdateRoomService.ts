@@ -1,14 +1,15 @@
 import { inject, injectable } from "tsyringe";
+import { instanceToInstance } from "class-transformer";
+import { compare, hash } from "bcryptjs";
 
+import { RolesEnum } from "../infra/typeorm/enums/RolesEnum";
 import AppError from "@shared/errors/AppError";
 import Room from "../infra/typeorm/entities/Room";
 
-import IAdmRoomsRepository from "../repositories/IAdmRoomsRepository";
 import IRoomsRepository from "../repositories/IRoomsRepository";
 import ISocketInformationDTO from "@shared/dtos/ISocketInformationDTO";
 import IUsersRepository from "@modules/users/repositories/IUsersRepository";
-import { instanceToInstance } from "class-transformer";
-import { compare, hash } from "bcryptjs";
+import IRolesRoomsRepository from "../repositories/IRolesRoomsRepository";
 
 interface Request {
   user_id: string;
@@ -30,8 +31,8 @@ interface Request {
 export default class UpdateRoomService {
 
   constructor(
-    @inject("AdmRoomsRepository")
-    private admRoomsRepository: IAdmRoomsRepository,
+    @inject("RolesRoomsRepository")
+    private rolesRoomsRepository: IRolesRoomsRepository,
 
     @inject("RoomsRepository")
     private roomsRepository: IRoomsRepository,
@@ -57,9 +58,9 @@ export default class UpdateRoomService {
       return null;
     }
 
-    const adm = await this.admRoomsRepository.findByUserIdAndRoomId(user_id, room_id);
+    const userRole = await this.rolesRoomsRepository.findByUserIdAndRoomId(user_id, room_id);
 
-    if (!adm) {
+    if (!userRole || userRole.role === "user") {
       socket.emit("error", { message: "User is not adm" });
       return null;
     }

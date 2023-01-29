@@ -1,0 +1,1 @@
+export type RolesEnum = "owner" | "admin" | "user";
