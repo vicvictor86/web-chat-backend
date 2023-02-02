@@ -45,6 +45,11 @@ export default class CreateConnectionUserRoomService {
       return null;
     }
 
+    if(newRoom.user_quantity >= newRoom.user_limit) {
+      socket.emit("app_error", { message: "Room is full", code: 400 });
+      return null;
+    }
+
     socket.join(newRoom.id);
 
     const connectionUserInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, newRoom.id);
@@ -67,6 +72,9 @@ export default class CreateConnectionUserRoomService {
         room_id: newRoom.id,
         is_on_chat: true,
       });
+
+      newRoom.user_quantity += 1;
+      await this.roomsRepository.save(newRoom);
     }
 
     callback({

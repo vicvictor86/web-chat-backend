@@ -82,6 +82,9 @@ export default class DeleteConnectionUserRoom {
 
     await this.connectionUserRoomRepository.delete(userToKickConnection.id);
 
+    room.user_quantity -= 1;
+    await this.roomsRepository.save(room);
+
     io.to(userToKickConnection.socket_id).emit("kicked");
 
     callback(userToKick.username);

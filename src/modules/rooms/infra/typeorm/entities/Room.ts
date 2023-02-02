@@ -16,6 +16,9 @@ export default class Room {
   is_private: boolean;
 
   @Column()
+  user_quantity: number;
+
+  @Column()
   @Exclude()
   password: string;
 
