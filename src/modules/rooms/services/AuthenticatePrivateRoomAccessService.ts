@@ -1,9 +1,7 @@
 import AppError from "@shared/errors/AppError";
-import { compare, hash } from "bcryptjs";
-import { sign } from "jsonwebtoken";
+import { compare } from "bcryptjs";
 import { inject, injectable } from "tsyringe";
 import IRoomsRepository from "../repositories/IRoomsRepository";
-import authConfig from "@config/auth";
 import Room from "../infra/typeorm/entities/Room";
 
 interface Request {

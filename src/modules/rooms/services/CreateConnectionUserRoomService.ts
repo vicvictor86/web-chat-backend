@@ -45,16 +45,9 @@ export default class CreateConnectionUserRoomService {
       return null;
     }
 
-    if(newRoom.user_quantity >= newRoom.user_limit) {
-      socket.emit("app_error", { message: "Room is full", code: 400 });
-      return null;
-    }
-
-    socket.join(newRoom.id);
-
     const connectionUserInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, newRoom.id);
     let alreadyInRoom = false;
-
+    
     let connection: ConnectionUsersRooms;
     if (connectionUserInRoom) {
       alreadyInRoom = connectionUserInRoom.is_on_chat;
@@ -66,16 +59,24 @@ export default class CreateConnectionUserRoomService {
         is_on_chat: true,
       });
     } else {
+      newRoom.user_quantity += 1;
+
+      if(newRoom.user_quantity > newRoom.user_limit) {
+        socket.emit("app_error", { message: "Room is full", code: 400 });
+        return null;
+      }
+
+      await this.roomsRepository.save(newRoom);
+
       connection = await this.connectionUserRoomRepository.create({
         user_id,
         socket_id: socket.id,
         room_id: newRoom.id,
         is_on_chat: true,
       });
-
-      newRoom.user_quantity += 1;
-      await this.roomsRepository.save(newRoom);
     }
+    
+    socket.join(newRoom.id);
 
     callback({
       room: newRoom,
