@@ -1,6 +1,6 @@
 import { inject, injectable } from "tsyringe";
+
 import ISocketInformationDTO from "../../../shared/dtos/ISocketInformationDTO";
-import { RolesEnum } from "../infra/typeorm/enums/RolesEnum";
 import IRolesRoomsRepository from "../repositories/IRolesRoomsRepository";
 import IRoomsRepository from "../repositories/IRoomsRepository";
 
