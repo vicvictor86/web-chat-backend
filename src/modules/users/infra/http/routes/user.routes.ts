@@ -1,4 +1,3 @@
-import { io } from "@shared/infra/http/http";
 import { Router } from "express";
 import UsersController from "../controllers/UserController";
 

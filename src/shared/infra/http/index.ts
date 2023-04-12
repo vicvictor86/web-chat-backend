@@ -2,7 +2,6 @@ import express, { NextFunction, Request, Response } from "express";
 import 'express-async-errors';
 
 import http from "http";
-import { Server } from "socket.io";
 
 import routes from "./routes/index";
 import cors from "cors";
@@ -13,7 +12,7 @@ import AppError from '@shared/errors/AppError'
 const app = express();
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
 }
 
 app.use(multer().none());
@@ -40,11 +39,4 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 const serverHttp = http.createServer(app);
 
-const io = new Server(serverHttp, {
-  cors: {
-    origin: "http://localhost:3000"
-  }
-});
-
-
-export { serverHttp, io };
+export { serverHttp };

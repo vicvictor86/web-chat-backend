@@ -15,6 +15,10 @@ interface Request {
 
   user_id: string;
 
+  order_by?: string;
+
+  quantity?: string;
+
   socketInformation: ISocketInformationDTO;
 }
 
@@ -28,7 +32,7 @@ export default class IndexMessageService {
     private roomsRepository: IRoomsRepository,
   ) { }
 
-  public async execute({ user_id, roomName, socketInformation }: Request): Promise<Message[] | null> {
+  public async execute({ user_id, roomName, order_by, quantity, socketInformation }: Request): Promise<Message[] | null> {
     const { io, socket, callback } = socketInformation;
 
     const room = await this.roomsRepository.findByName(roomName);

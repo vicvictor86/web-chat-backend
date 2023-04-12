@@ -80,7 +80,6 @@ export default class CreateConnectionUserRoomService {
 
     callback({
       room: newRoom,
-      username: user.username,
       is_on_chat: alreadyInRoom,
     })
 

@@ -1,3 +1,4 @@
+import messagesRouter from '@modules/message/infra/http/routes/messages.routes';
 import privateRoomsRouter from '@modules/rooms/infra/http/routes/privateRooms.routes';
 import roomsRouter from '@modules/rooms/infra/http/routes/rooms.routes';
 import roomsByUserRouter from '@modules/rooms/infra/http/routes/roomsByUser.routes';
@@ -11,6 +12,7 @@ routes.use("/user", userRouter);
 routes.use("/login", sessionsRouter);
 routes.use("/rooms", roomsRouter);
 routes.use("/rooms/user", roomsByUserRouter);
+routes.use("/messages", messagesRouter);
 routes.use("/rooms/private", privateRoomsRouter)
 
 export default routes;

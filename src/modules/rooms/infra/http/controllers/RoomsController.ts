@@ -5,7 +5,6 @@ import { instanceToInstance } from "class-transformer";
 import CreateRoomService from "@modules/rooms/services/CreateRoomService";
 import ShowRoomService from "@modules/rooms/services/ShowRoomService";
 import IndexRoomService from "@modules/rooms/services/IndexRoomService";
-import UpdateRoomService from "@modules/rooms/services/UpdateRoomService";
 
 export default class RoomsController {
   public async create(request: Request, response: Response) {

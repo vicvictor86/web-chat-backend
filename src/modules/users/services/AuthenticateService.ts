@@ -24,7 +24,7 @@ export default class AuthenticateService {
     const user = await this.userRepository.findByUsername(username);
 
     if(!user){
-      throw new AppError('Username or password incorrect');
+      throw new AppError('Username or password incorrect', 401);
     }
 
     const hashedPassword = user.password;
@@ -32,7 +32,7 @@ export default class AuthenticateService {
     const authenticated = await compare(password, hashedPassword);
 
     if(!authenticated) {
-      throw new AppError('Username or password incorrect');
+      throw new AppError('Username or password incorrect', 401);
     }
 
     const token = sign({}, authConfig.jwt.secret, {

@@ -15,6 +15,10 @@ interface PreviousMessagesRequest {
   user_id: string;
   
   roomName: string;
+
+  quantity?: string;
+
+  order_by?: string;
 }
 
 export default class MessagesController {
@@ -27,10 +31,10 @@ export default class MessagesController {
   }
 
   public async index(data: PreviousMessagesRequest, socketInformation: ISocketInformationDTO): Promise<void> {
-    const { user_id, roomName } = data;
+    const { user_id, roomName, quantity, order_by } = data;
     
     const indexMessageService = container.resolve(IndexMessageService);
 
-    const message = await indexMessageService.execute({ user_id, roomName, socketInformation });
+    const message = await indexMessageService.execute({ user_id, roomName, quantity, order_by, socketInformation });
   }
 }
