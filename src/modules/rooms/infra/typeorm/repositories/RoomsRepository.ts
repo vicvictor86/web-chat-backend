@@ -32,10 +32,10 @@ export const RoomsRepository: IRoomRepository = roomsRepository.extend({
     return room;
   },
 
-  async findByUserLimit(user_limit: number): Promise<Room[] | null> {
+  async findByUserLimit(userLimit: number): Promise<Room[] | null> {
     const room = await roomsRepository.find({
       where: {
-        user_limit
+        userLimit
       }
     });
     return room;
@@ -52,7 +52,7 @@ export const RoomsRepository: IRoomRepository = roomsRepository.extend({
   async update(roomData: IUpdateRoomDTO): Promise<Room> {
     const roomToUpdate = await roomsRepository.findOne({
       where: {
-        id: roomData.room_id,
+        id: roomData.roomId,
       }
     });
 
@@ -60,8 +60,8 @@ export const RoomsRepository: IRoomRepository = roomsRepository.extend({
       ...roomToUpdate,
       ...(roomData.name && { name: roomData.name }),
       ...(roomData.password && { password: roomData.password }),
-      ...(roomData.user_limit && { user_limit: roomData.user_limit }),
-      ...(roomData.is_private && { is_private: roomData.is_private }),
+      ...(roomData.userLimit && { userLimit: roomData.userLimit }),
+      ...(roomData.isPrivate && { isPrivate: roomData.isPrivate }),
     } as Room;
 
     await roomsRepository.save(updatedRoom)

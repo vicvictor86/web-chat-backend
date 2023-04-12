@@ -4,15 +4,15 @@ import DeleteRoomService from "@modules/rooms/services/DeleteRoomService";
 import UpdateRoomService from "@modules/rooms/services/UpdateRoomService";
 
 interface DeleteRequest {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 }
 
 interface UpdateRequest {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
   newRoomName: string;
 
@@ -24,15 +24,15 @@ interface UpdateRequest {
 }
 
 export default class ConnectionUserRoomController {
-  public async delete({ user_id, room_id }: DeleteRequest, socketInformation: ISocketInformationDTO): Promise<void> {
+  public async delete({ userId, roomId }: DeleteRequest, socketInformation: ISocketInformationDTO): Promise<void> {
     const deleteService = container.resolve(DeleteRoomService);
 
-    await deleteService.execute({ user_id, room_id, socketInformation });
+    await deleteService.execute({ userId, roomId, socketInformation });
   }
 
-  public async update({ user_id, room_id, newRoomName, newRoomPassword, newRoomUserLimit, isPrivate }: UpdateRequest, socketInformation: ISocketInformationDTO): Promise<void> {
+  public async update({ userId, roomId, newRoomName, newRoomPassword, newRoomUserLimit, isPrivate }: UpdateRequest, socketInformation: ISocketInformationDTO): Promise<void> {
     const updateConnectionUserRoomService = container.resolve(UpdateRoomService);
 
-    await updateConnectionUserRoomService.execute({ user_id, room_id, newRoomName, newRoomPassword, newRoomUserLimit, is_private: isPrivate, socketInformation });
+    await updateConnectionUserRoomService.execute({ userId, roomId, newRoomName, newRoomPassword, newRoomUserLimit, isPrivate, socketInformation });
   }
 }

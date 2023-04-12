@@ -6,40 +6,40 @@ import IndexConnectionUserRoomService from "@modules/rooms/services/IndexConnect
 import DeleteConnectionUserRoom from "@modules/rooms/services/DeleteConnectionUserRoom";
 
 interface Request {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
   password: string;
 
-  is_private: boolean;
+  isPrivate: boolean;
 }
 
 interface ConnectionsRequest {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 }
 
 interface DeleteRequest {
-  user_id: string;
+  userId: string;
   
-  room_id: string;
+  roomId: string;
   
   userToKickId: string; 
 }
 
 export default class ConnectionUserRoomController {
-  public async create({ user_id, room_id }: Request, socketInformation: ISocketInformationDTO): Promise<void> {
+  public async create({ userId, roomId }: Request, socketInformation: ISocketInformationDTO): Promise<void> {
     const createConnectionUserRoomService = container.resolve(CreateConnectionUserRoomService);
 
-    await createConnectionUserRoomService.execute({ user_id, room_id, socketInformation });
+    await createConnectionUserRoomService.execute({ userId, roomId, socketInformation });
   }
 
-  public async delete({ user_id, room_id, userToKickId }: DeleteRequest, socketInformation: ISocketInformationDTO): Promise<void> {
+  public async delete({ userId, roomId, userToKickId }: DeleteRequest, socketInformation: ISocketInformationDTO): Promise<void> {
     const deleteConnectionUserRoomService = container.resolve(DeleteConnectionUserRoom);
 
-    await deleteConnectionUserRoomService.execute({ user_id, room_id, userToKickId, socketInformation });
+    await deleteConnectionUserRoomService.execute({ userId, roomId, userToKickId, socketInformation });
   }
 
   public async update(socketInformation: ISocketInformationDTO): Promise<void> {
@@ -48,9 +48,9 @@ export default class ConnectionUserRoomController {
     await updateConnectionUserRoomService.execute({ socketInformation });
   }
 
-  public async index({ user_id, room_id }: ConnectionsRequest, socketInformation: ISocketInformationDTO) {
+  public async index({ userId, roomId }: ConnectionsRequest, socketInformation: ISocketInformationDTO) {
     const indexConnectionUserRoomService = container.resolve(IndexConnectionUserRoomService);
 
-    await indexConnectionUserRoomService.execute({ user_id, room_id, socketInformation });
+    await indexConnectionUserRoomService.execute({ userId, roomId, socketInformation });
   }
 }

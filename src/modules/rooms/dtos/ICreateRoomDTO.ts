@@ -1,9 +1,9 @@
 export default interface ICreateRoomDTO {
   name: string;
 
-  user_limit: number;
+  userLimit: number;
 
-  is_private: boolean;
+  isPrivate: boolean;
 
   password: string | undefined;
 }

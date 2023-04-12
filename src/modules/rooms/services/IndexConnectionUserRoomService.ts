@@ -4,9 +4,9 @@ import ConnectionUsersRooms from "../infra/typeorm/entities/ConnectionUserRoom";
 import IConnectionUserRoomRepository from "../repositories/IConnectionUserRoomRepository";
 
 interface Request {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
   socketInformation: ISocketInformationDTO;
 }
@@ -19,11 +19,11 @@ export default class IndexConnectionUserRoomService {
     private connectionUserRoomRepository: IConnectionUserRoomRepository,
   ) { }
 
-  public async execute({user_id, room_id, socketInformation }: Request): Promise<ConnectionUsersRooms[] | null> {
+  public async execute({userId, roomId, socketInformation }: Request): Promise<ConnectionUsersRooms[] | null> {
     const { io, socket, callback } = socketInformation;
 
-    if(user_id && !room_id) {
-      const connections = await this.connectionUserRoomRepository.findByUserId(user_id);
+    if(userId && !roomId) {
+      const connections = await this.connectionUserRoomRepository.findByUserId(userId);
       
       callback({
         connections
@@ -32,8 +32,8 @@ export default class IndexConnectionUserRoomService {
       return connections;
     }
 
-    if(!user_id && room_id) {
-      const connections = await this.connectionUserRoomRepository.findByRoomId(room_id);
+    if(!userId && roomId) {
+      const connections = await this.connectionUserRoomRepository.findByRoomId(roomId);
       
       callback({
         connections
@@ -42,9 +42,9 @@ export default class IndexConnectionUserRoomService {
       return connections;
     }
 
-    if(user_id && room_id) {
+    if(userId && roomId) {
       const connections = [];
-      const connectionUserRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, room_id);
+      const connectionUserRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(userId, roomId);
 
       if(connectionUserRoom){
         connections.push(connectionUserRoom);

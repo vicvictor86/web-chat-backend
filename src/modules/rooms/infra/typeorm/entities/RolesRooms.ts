@@ -10,23 +10,23 @@ export default class RolesRooms {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  user_id: string;
+  @Column({ name: 'user_id' })
+  userId: string;
 
   @Exclude()
   @OneToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column()
-  room_id: string;
+  @Column({ name: 'room_id' })
+  roomId: string;
 
   @Exclude()
   @OneToOne(() => Room, { eager: true })
   @JoinColumn({ name: 'room_id' })
   room: Room;
 
-  @Column({ type: 'enum', enum: ["owner", "admin", "user"], default: "user"})
+  @Column({ type: 'enum', enum: ["owner", "admin", "user"], default: "user" })
   role: RolesEnum;
 
   @CreateDateColumn()

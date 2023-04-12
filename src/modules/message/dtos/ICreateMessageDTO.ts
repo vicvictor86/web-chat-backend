@@ -1,7 +1,7 @@
 export default interface ICreateMessageDTO {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
   text: string;
 }

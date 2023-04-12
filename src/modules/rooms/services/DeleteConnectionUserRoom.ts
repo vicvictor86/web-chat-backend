@@ -6,12 +6,11 @@ import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 import IRoomsRepository from "../repositories/IRoomsRepository";
 import IConnectionUserRoomRepository from "../repositories/IConnectionUserRoomRepository";
 import IRolesRoomsRepository from "../repositories/IRolesRoomsRepository";
-import { RolesEnum } from "../infra/typeorm/enums/RolesEnum";
 
 interface Request {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
   userToKickId: string;
 
@@ -36,24 +35,24 @@ export default class DeleteConnectionUserRoom {
 
   ) { }
 
-  public async execute({ user_id, room_id, userToKickId, socketInformation }: Request): Promise<void | null> {
+  public async execute({ userId, roomId, userToKickId, socketInformation }: Request): Promise<void | null> {
     const { io, socket, callback } = socketInformation;
 
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.findById(userId);
 
     if (!user) {
       socket.emit("app_error", { message: "User not found" });
       return null;
     }
 
-    const room = await this.roomsRepository.findById(room_id);
+    const room = await this.roomsRepository.findById(roomId);
 
     if (!room) {
       socket.emit("app_error", { message: "Room not found", code: 404 });
       return null;
     }
 
-    const userToKickConnection = await this.connectionUserRoomRepository.findByUserIdAndRoomId(userToKickId, room_id);
+    const userToKickConnection = await this.connectionUserRoomRepository.findByUserIdAndRoomId(userToKickId, roomId);
     const userToKick = userToKickConnection?.user;
 
     if (!userToKick) {
@@ -61,19 +60,19 @@ export default class DeleteConnectionUserRoom {
       return null;
     }
 
-    const userRole = await this.rolesRoomsRepository.findByUserIdAndRoomId(user_id, room_id);
+    const userRole = await this.rolesRoomsRepository.findByUserIdAndRoomId(userId, roomId);
 
     if (!userRole || userRole.role === "user") {
       socket.emit("app_error", { message: "User is not admin" });
       return null;
     }
 
-    if (userToKick.id === user_id) {
+    if (userToKick.id === userId) {
       socket.emit("app_error", { message: "You can kick yourself " });
       return null;
     }
 
-    const userToKickIsRoomCreator = await this.rolesRoomsRepository.findByUserIdAndRoomId(userToKick.id, room_id);
+    const userToKickIsRoomCreator = await this.rolesRoomsRepository.findByUserIdAndRoomId(userToKick.id, roomId);
 
     if (userToKickIsRoomCreator?.role === "owner") {
       socket.emit("app_error", { message: "You can't kick the room creator " });
@@ -82,10 +81,10 @@ export default class DeleteConnectionUserRoom {
 
     await this.connectionUserRoomRepository.delete(userToKickConnection.id);
 
-    room.user_quantity -= 1;
+    room.userQuantity -= 1;
     await this.roomsRepository.save(room);
 
-    io.to(userToKickConnection.socket_id).emit("kicked");
+    io.to(userToKickConnection.socketId).emit("kicked");
 
     callback(userToKick.username);
   }

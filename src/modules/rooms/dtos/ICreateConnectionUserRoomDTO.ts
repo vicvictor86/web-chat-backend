@@ -1,9 +1,9 @@
 export default interface ICreateConnectionUserRoomDTO {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
-  socket_id: string;
+  socketId: string;
 
-  is_on_chat: boolean;
+  isOnChat: boolean;
 }

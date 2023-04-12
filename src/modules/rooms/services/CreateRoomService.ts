@@ -9,11 +9,11 @@ import IRoomsRepository from "../repositories/IRoomsRepository";
 interface Request {
   name: string;
 
-  user_limit: number;
+  userLimit: number;
 
   password: string | undefined;
 
-  user_id: string;
+  userId: string;
 }
 
 @injectable()
@@ -28,7 +28,7 @@ export default class CreateRoomService {
 
   ) { }
 
-  public async execute({ name, user_limit, password, user_id }: Request): Promise<Room> {
+  public async execute({ name, userLimit, password, userId }: Request): Promise<Room> {
     const roomExists = await this.roomsRepository.findByName(name);
 
     if (roomExists) {
@@ -43,14 +43,14 @@ export default class CreateRoomService {
 
     const room = await this.roomsRepository.create({
       name,
-      user_limit,
-      is_private: password !== undefined,
+      userLimit,
+      isPrivate: password !== undefined,
       password,
     });
 
     await this.rolesRoomsRepository.create({
-      room_id: room.id,
-      user_id,
+      roomId: room.id,
+      userId,
       role: 'owner',
     });
 

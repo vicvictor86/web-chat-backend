@@ -1,11 +1,11 @@
 export default interface IUpdateRoomDTO {
-  room_id: string;
+  roomId: string;
 
   name: string;
 
-  user_limit: number;
+  userLimit: number;
 
-  is_private: boolean;
+  isPrivate: boolean;
 
   password: string | undefined;
 }

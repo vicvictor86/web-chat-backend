@@ -13,9 +13,9 @@ import Message from "../infra/typeorm/entities/Messages";
 interface Request {
   roomName: string;
 
-  user_id: string;
+  userId: string;
 
-  order_by?: string;
+  orderBy?: string;
 
   quantity?: string;
 
@@ -32,7 +32,7 @@ export default class IndexMessageService {
     private roomsRepository: IRoomsRepository,
   ) { }
 
-  public async execute({ user_id, roomName, order_by, quantity, socketInformation }: Request): Promise<Message[] | null> {
+  public async execute({ userId, roomName, orderBy, quantity, socketInformation }: Request): Promise<Message[] | null> {
     const { io, socket, callback } = socketInformation;
 
     const room = await this.roomsRepository.findByName(roomName);

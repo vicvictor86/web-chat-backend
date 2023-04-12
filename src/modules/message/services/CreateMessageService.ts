@@ -6,7 +6,7 @@ import Message from "../infra/typeorm/entities/Messages";
 import IMessagesRepository from "../repositories/IMessagesRepository";
 
 interface Request {
-  user_id: string;
+  userId: string;
 
   roomName: string;
 
@@ -25,7 +25,7 @@ export default class CreateMessageService {
     private roomsRepository: IRoomsRepository,
   ) { }
 
-  public async execute({ user_id, text, roomName, socketInformation }: Request): Promise<Message | null> {
+  public async execute({ userId, text, roomName, socketInformation }: Request): Promise<Message | null> {
     const { io, socket, callback } = socketInformation;
 
     const room = await this.roomsRepository.findByName(roomName);
@@ -35,11 +35,10 @@ export default class CreateMessageService {
       return null;
     }
 
-    const room_id = room.id;
-
+    const roomId = room.id;
     const message = await this.messagesRepository.create({
-      user_id,
-      room_id,
+      userId,
+      roomId,
       text,
     });
 
@@ -51,7 +50,7 @@ export default class CreateMessageService {
       createdAt: messageWithEagle?.created_at,
     } as IFrontEndResponseMessage;
 
-    io.to(room_id).emit("message", messageToFront);
+    io.to(roomId).emit("message", messageToFront);
 
     return message;
   }

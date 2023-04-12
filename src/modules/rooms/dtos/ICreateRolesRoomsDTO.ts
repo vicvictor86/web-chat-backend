@@ -1,9 +1,9 @@
 import { RolesEnum } from '../infra/typeorm/enums/RolesEnum';
 
 export default interface ICreateRolesRoomsDTO {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
   role: RolesEnum;
 }

@@ -6,7 +6,7 @@ import IRoomsRepository from "../repositories/IRoomsRepository";
 interface Request {
   name: string;
 
-  user_limit: number;
+  userLimit: number;
 }
 
 @injectable()

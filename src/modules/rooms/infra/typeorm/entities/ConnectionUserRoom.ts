@@ -8,27 +8,27 @@ export default class ConnectionUsersRooms {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  user_id: string;
+  @Column({ name: 'user_id' })
+  userId: string;
 
   @Exclude()
   @OneToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
-  
-  @Column()
-  room_id: string;
+
+  @Column({ name: 'room_id' })
+  roomId: string;
 
   @Exclude()
   @OneToOne(() => Room, { eager: true })
   @JoinColumn({ name: 'room_id' })
   room: Room;
 
-  @Column()
-  socket_id: string;
+  @Column({ name: 'socket_id' })
+  socketId: string;
 
-  @Column()
-  is_on_chat: boolean;
+  @Column({ name: 'is_on_chat' })
+  isOnChat: boolean;
 
   @CreateDateColumn()
   created_at: Date;

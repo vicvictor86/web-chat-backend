@@ -17,41 +17,41 @@ export const ConnectionUserRoomRepository: IConnectionUserRoomRepository = conne
     return connectionUserRoom;
   },
 
-  async findByUserId(user_id: string): Promise<ConnectionUserRoom[] | null> {
+  async findByUserId(userId: string): Promise<ConnectionUserRoom[] | null> {
     const connectionUserRoom = await connectionUserRoomRepository.find({
       where: {
-        user_id
+        userId
       }
     });
 
     return connectionUserRoom;
   },
 
-  async findByRoomId(room_id: string): Promise<ConnectionUserRoom[] | null> {
+  async findByRoomId(roomId: string): Promise<ConnectionUserRoom[] | null> {
     const connectionUserRoom = await connectionUserRoomRepository.find({
       where: {
-        room_id
+        roomId
       }
     });
 
     return connectionUserRoom;
   },
 
-  async findBySocketId(socket_id: string): Promise<ConnectionUserRoom | null> {
+  async findBySocketId(socketId: string): Promise<ConnectionUserRoom | null> {
     const connectionUserRoom = await connectionUserRoomRepository.findOne({
       where: {
-        socket_id
+        socketId
       }
     });
     
     return connectionUserRoom;
   },
 
-  async findByUserIdAndRoomId(user_id: string, room_id: string): Promise<ConnectionUserRoom | null> {
+  async findByUserIdAndRoomId(userId: string, roomId: string): Promise<ConnectionUserRoom | null> {
     const connectionUserRoom = await connectionUserRoomRepository.findOne({
       where: {
-        user_id,
-        room_id
+        userId,
+        roomId
       }
     });
 

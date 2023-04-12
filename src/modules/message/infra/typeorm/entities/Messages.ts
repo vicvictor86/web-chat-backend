@@ -8,16 +8,16 @@ export default class Messages {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  user_id: string;
+  @Column({ name: 'user_id' })
+  userId: string;
 
   @Exclude()
   @OneToOne(() => User, { eager: true })
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column()
-  room_id: string;
+  @Column({ name: 'room_id' })
+  roomId: string;
 
   @Exclude()
   @OneToOne(() => Room, { eager: true })

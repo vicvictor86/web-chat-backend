@@ -30,13 +30,13 @@ export default class UpdateConnectionUserRoomService {
       return null;
     }
 
-    connection.is_on_chat = false;
+    connection.isOnChat = false;
 
     const newConnection = await this.connectionUserRoomRepository.save(connection);
 
     const message = await this.messagesRepository.create({
-      room_id: newConnection.room_id,
-      user_id: newConnection.user_id,
+      roomId: newConnection.roomId,
+      userId: newConnection.userId,
       text: " saiu da sala",
     });
 

@@ -17,31 +17,31 @@ export const RolesRoomsRepository: IRolesRoomsRepository = rolesRoomsRepository.
     return rolesRooms;
   },
 
-  async findByUserId(user_id: string): Promise<RolesRooms[] | null> {
+  async findByUserId(userId: string): Promise<RolesRooms[] | null> {
     const rolesRooms = await rolesRoomsRepository.find({
       where: {
-        user_id
+        userId
       }
     });
 
     return rolesRooms;
   },
 
-  async findByRoomId(room_id: string): Promise<RolesRooms[]| null> {
+  async findByRoomId(roomId: string): Promise<RolesRooms[]| null> {
     const rolesRooms = await rolesRoomsRepository.find({
       where: {
-        room_id
+        roomId
       }
     });
 
     return rolesRooms;
   },
 
-  async findByUserIdAndRoomId(user_id: string, room_id: string): Promise<RolesRooms | null> {
+  async findByUserIdAndRoomId(userId: string, roomId: string): Promise<RolesRooms | null> {
     const rolesRooms = await rolesRoomsRepository.findOne({
       where: {
-        user_id,
-        room_id
+        userId,
+        roomId
       }
     });
 

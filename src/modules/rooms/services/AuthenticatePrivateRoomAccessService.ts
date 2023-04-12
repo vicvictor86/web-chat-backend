@@ -5,7 +5,7 @@ import IRoomsRepository from "../repositories/IRoomsRepository";
 import Room from "../infra/typeorm/entities/Room";
 
 interface Request {
-  room_id: string;
+  roomId: string;
 
   password: string;
 }
@@ -17,8 +17,8 @@ export default class AuthenticatePrivateRoomAccessService {
     private roomsRepository: IRoomsRepository,
   ){}
 
-  public async execute({ room_id, password }: Request): Promise<Room>{
-    const room = await this.roomsRepository.findById(room_id);
+  public async execute({ roomId, password }: Request): Promise<Room>{
+    const room = await this.roomsRepository.findById(roomId);
 
     if(!room){
       throw new AppError('This room don\'t exist');

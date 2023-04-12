@@ -1,5 +1,5 @@
 export default interface ICreateSessionUserDTO {
-  socket_id: string; 
+  socketId: string; 
 
   username: string;
 

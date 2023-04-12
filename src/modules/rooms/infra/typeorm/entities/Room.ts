@@ -9,14 +9,14 @@ export default class Room {
   @Column()
   name: string;
 
-  @Column()
-  user_limit: number;
+  @Column({ name: 'user_limit' })
+  userLimit: number;
 
-  @Column()
-  is_private: boolean;
+  @Column({ name: 'is_private' })
+  isPrivate: boolean;
 
-  @Column()
-  user_quantity: number;
+  @Column({ name: 'user_quantity' })
+  userQuantity: number;
 
   @Column()
   @Exclude()

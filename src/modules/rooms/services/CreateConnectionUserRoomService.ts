@@ -8,9 +8,9 @@ import IRoomsRepository from "../repositories/IRoomsRepository";
 import ConnectionUsersRooms from "../infra/typeorm/entities/ConnectionUserRoom";
 
 interface Request {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
   socketInformation: ISocketInformationDTO;
 }
@@ -28,40 +28,40 @@ export default class CreateConnectionUserRoomService {
     private connectionUserRoomRepository: IConnectionUserRoomRepository
   ) { }
 
-  public async execute({ user_id, room_id, socketInformation }: Request): Promise<ConnectionUsersRooms | null> {
+  public async execute({ userId, roomId, socketInformation }: Request): Promise<ConnectionUsersRooms | null> {
     const { io, socket, callback } = socketInformation;
 
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.findById(userId);
 
     if (!user) {
       socket.emit("app_error", { message: "User not found" });
       return null;
     }
 
-    const newRoom = await this.roomsRepository.findById(room_id);
+    const newRoom = await this.roomsRepository.findById(roomId);
 
     if (!newRoom) {
       socket.emit("app_error", { message: "Room not found", code: 404 });
       return null;
     }
 
-    const connectionUserInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(user_id, newRoom.id);
+    const connectionUserInRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(userId, newRoom.id);
     let alreadyInRoom = false;
     
     let connection: ConnectionUsersRooms;
     if (connectionUserInRoom) {
-      alreadyInRoom = connectionUserInRoom.is_on_chat;
+      alreadyInRoom = connectionUserInRoom.isOnChat;
       
       connection = await this.connectionUserRoomRepository.save({
         ...connectionUserInRoom,
-        socket_id: socket.id,
+        socketId: socket.id,
         room: newRoom,
-        is_on_chat: true,
+        isOnChat: true,
       });
     } else {
-      newRoom.user_quantity += 1;
+      newRoom.userQuantity += 1;
 
-      if(newRoom.user_quantity > newRoom.user_limit) {
+      if(newRoom.userQuantity > newRoom.userLimit) {
         socket.emit("app_error", { message: "Room is full", code: 400 });
         return null;
       }
@@ -69,10 +69,10 @@ export default class CreateConnectionUserRoomService {
       await this.roomsRepository.save(newRoom);
 
       connection = await this.connectionUserRoomRepository.create({
-        user_id,
-        socket_id: socket.id,
-        room_id: newRoom.id,
-        is_on_chat: true,
+        userId,
+        socketId: socket.id,
+        roomId: newRoom.id,
+        isOnChat: true,
       });
     }
     
@@ -80,7 +80,7 @@ export default class CreateConnectionUserRoomService {
 
     callback({
       room: newRoom,
-      is_on_chat: alreadyInRoom,
+      isOnChat: alreadyInRoom,
     })
 
     io.to(newRoom.id).emit("new_user_connected");

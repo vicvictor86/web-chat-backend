@@ -2,8 +2,6 @@ import { inject, injectable } from "tsyringe";
 import { instanceToInstance } from "class-transformer";
 import { compare, hash } from "bcryptjs";
 
-import { RolesEnum } from "../infra/typeorm/enums/RolesEnum";
-import AppError from "@shared/errors/AppError";
 import Room from "../infra/typeorm/entities/Room";
 
 import IRoomsRepository from "../repositories/IRoomsRepository";
@@ -12,9 +10,9 @@ import IUsersRepository from "@modules/users/repositories/IUsersRepository";
 import IRolesRoomsRepository from "../repositories/IRolesRoomsRepository";
 
 interface Request {
-  user_id: string;
+  userId: string;
 
-  room_id: string;
+  roomId: string;
 
   newRoomName: string;
 
@@ -22,7 +20,7 @@ interface Request {
 
   newRoomUserLimit: number;
 
-  is_private: boolean;
+  isPrivate: boolean;
 
   socketInformation: ISocketInformationDTO;
 }
@@ -41,24 +39,24 @@ export default class UpdateRoomService {
     private usersRepository: IUsersRepository,
   ) { }
 
-  public async execute({ user_id, room_id, newRoomName, newRoomPassword, newRoomUserLimit, is_private, socketInformation }: Request): Promise<Room | null> {
+  public async execute({ userId, roomId, newRoomName, newRoomPassword, newRoomUserLimit, isPrivate, socketInformation }: Request): Promise<Room | null> {
     const { socket, io, callback } = socketInformation;
 
-    const user = await this.usersRepository.findById(user_id);
+    const user = await this.usersRepository.findById(userId);
 
     if (!user) {
       socket.emit("error", { message: "User not found" });
       return null;
     }
 
-    const room = await this.roomsRepository.findById(room_id);
+    const room = await this.roomsRepository.findById(roomId);
 
     if (!room) {
       socket.emit("error", { message: "Room not found" });
       return null;
     }
 
-    const userRole = await this.rolesRoomsRepository.findByUserIdAndRoomId(user_id, room_id);
+    const userRole = await this.rolesRoomsRepository.findByUserIdAndRoomId(userId, roomId);
 
     if (!userRole || userRole.role === "user") {
       socket.emit("error", { message: "User is not adm" });
@@ -69,11 +67,11 @@ export default class UpdateRoomService {
 
     const password = await hash(newRoomPassword, 8);
 
-    const updatedRoom = await this.roomsRepository.update({ room_id, name: newRoomName, password, user_limit: newRoomUserLimit, is_private });
+    const updatedRoom = await this.roomsRepository.update({ roomId, name: newRoomName, password, userLimit: newRoomUserLimit, isPrivate });
 
     const isSamePassword = !newRoomPassword || await compare(newRoomPassword, olderPassword);
 
-    io.to(room_id).emit("room_updated", { room: instanceToInstance(updatedRoom), isSamePassword });
+    io.to(roomId).emit("room_updated", { room: instanceToInstance(updatedRoom), isSamePassword });
 
     return updatedRoom;
   }

@@ -9,7 +9,7 @@ export default class PrivateRoomsController {
 
     const authenticatePrivateRoomAccessService = container.resolve(AuthenticatePrivateRoomAccessService);
 
-    const room = await authenticatePrivateRoomAccessService.execute({password, room_id: roomId});
+    const room = await authenticatePrivateRoomAccessService.execute({password, roomId});
 
     return response.status(200).json(instanceToInstance(room));
   }
