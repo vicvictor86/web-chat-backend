@@ -5,7 +5,7 @@ import ShowMessagesService from "@modules/message/services/ShowMessagesService";
 
 export default class MessagesController {
   public async show(request: Request, response: Response) {
-    const { roomId } = request.body;
+    const { roomId } = request.params;
 
     const showMessagesService = container.resolve(ShowMessagesService);
 

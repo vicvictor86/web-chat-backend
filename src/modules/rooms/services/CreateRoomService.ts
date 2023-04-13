@@ -25,7 +25,6 @@ export default class CreateRoomService {
 
     @inject("RolesRoomsRepository")
     private rolesRoomsRepository: IRolesRoomsRepository,
-
   ) { }
 
   public async execute({ name, userLimit, password, userId }: Request): Promise<Room> {

@@ -1,7 +1,6 @@
 import IRoomsRepository from "@modules/rooms/repositories/IRoomsRepository";
 import ISocketInformationDTO from "@shared/dtos/ISocketInformationDTO";
 import { inject, injectable } from "tsyringe";
-import IFrontEndResponseMessage from "../dtos/IFrontEndResponseMessage";
 import Message from "../infra/typeorm/entities/Messages";
 import IMessagesRepository from "../repositories/IMessagesRepository";
 
@@ -44,13 +43,7 @@ export default class CreateMessageService {
 
     const messageWithEagle = await this.messagesRepository.findById(message.id);
 
-    const messageToFront = {
-      username: messageWithEagle?.user.username,
-      text: messageWithEagle?.text,
-      createdAt: messageWithEagle?.created_at,
-    } as IFrontEndResponseMessage;
-
-    io.to(roomId).emit("message", messageToFront);
+    io.to(roomId).emit("message", messageWithEagle);
 
     return message;
   }

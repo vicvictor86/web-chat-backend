@@ -32,7 +32,7 @@ interface DeleteRequest {
 export default class ConnectionUserRoomController {
   public async create({ userId, roomId }: Request, socketInformation: ISocketInformationDTO): Promise<void> {
     const createConnectionUserRoomService = container.resolve(CreateConnectionUserRoomService);
-
+    
     await createConnectionUserRoomService.execute({ userId, roomId, socketInformation });
   }
 
