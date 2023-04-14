@@ -19,34 +19,30 @@ export default class IndexConnectionUserRoomService {
     private connectionUserRoomRepository: IConnectionUserRoomRepository,
   ) { }
 
-  public async execute({userId, roomId, socketInformation }: Request): Promise<ConnectionUsersRooms[] | null> {
+  public async execute({ userId, roomId, socketInformation }: Request): Promise<ConnectionUsersRooms[] | null> {
     const { io, socket, callback } = socketInformation;
 
-    if(userId && !roomId) {
+    if (userId && !roomId) {
       const connections = await this.connectionUserRoomRepository.findByUserId(userId);
-      
-      callback({
-        connections
-      })
+
+      callback(connections)
 
       return connections;
     }
 
-    if(!userId && roomId) {
+    if (!userId && roomId) {
       const connections = await this.connectionUserRoomRepository.findByRoomId(roomId);
-      
-      callback({
-        connections
-      })
+
+      callback(connections)
 
       return connections;
     }
 
-    if(userId && roomId) {
+    if (userId && roomId) {
       const connections = [];
       const connectionUserRoom = await this.connectionUserRoomRepository.findByUserIdAndRoomId(userId, roomId);
 
-      if(connectionUserRoom){
+      if (connectionUserRoom) {
         connections.push(connectionUserRoom);
       }
 
@@ -55,7 +51,7 @@ export default class IndexConnectionUserRoomService {
       return connections;
     }
 
-    socket.emit("error", { message: "User and room not found "});
+    socket.emit("error", { message: "User and room not found " });
 
     return null;
   }
